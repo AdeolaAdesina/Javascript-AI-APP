@@ -211,31 +211,6 @@ const handleSubmit = async (e) => {
   // messageDiv.innerHTML = "..."
   loader(messageDiv)
 
-  const response = await fetch('https://codex-im0y.onrender.com/', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-          prompt: data.get('prompt')
-      })
-  })
-
-  clearInterval(loadInterval)
-  messageDiv.innerHTML = " "
-
-  if (response.ok) {
-      const data = await response.json();
-      const parsedData = data.bot.trim() // trims any trailing spaces/'\n' 
-
-      typeText(messageDiv, parsedData)
-  } else {
-      const err = await response.text()
-
-      messageDiv.innerHTML = "Something went wrong"
-      alert(err)
-  }
-}
 
 //for handleSubmit to work
 form.addEventListener('submit', handleSubmit)
@@ -358,4 +333,44 @@ You can also open a new terminal, cd into client and run ```npm run dev``` to ru
 
 # Connecting Client to Server
 
+Now go to the script.js in client folder and add:
 
+```
+//to fetch data from server - bot response
+  const response = await fetch('http://localhost:5000', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          prompt: data.get('prompt')
+      })
+  })
+
+  //after we get a response, we want to clear interval
+  clearInterval(loadInterval)
+  messageDiv.innerHTML = " "
+
+  if (response.ok) {
+      const data = await response.json();
+      const parsedData = data.bot.trim(); // trims any trailing spaces/'\n' 
+
+      typeText(messageDiv, parsedData)
+  } else {
+      const err = await response.text()
+
+      messageDiv.innerHTML = "Something went wrong"
+      alert(err)
+  }
+}
+```
+
+
+Now we can test our app.
+
+If you get an error, you might have to reload your terminal with control+C. 
+Then move .env into server folder and run it again.
+
+
+
+# Deployment
